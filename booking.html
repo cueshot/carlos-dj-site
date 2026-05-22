@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book DJ Carlos</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0D0D0D;
+      --purple:   #8B5CF6;
+      --pink:     #EC4899;
+      --white:    #F8F8F8;
+      --card:     #111111;
+      --input-bg: #0D0D0D;
+      --border:   rgba(139,92,246,.22);
+      --nav-h:    64px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.25rem, 5vw, 3rem);
+      background: rgba(13,13,13,.8);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(139,92,246,.18);
+    }
+
+    .nav-logo {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: clamp(1.25rem, 3vw, 2.5rem); list-style: none; }
+
+    .nav-links a {
+      color: rgba(248,248,248,.65);
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-book {
+      background: linear-gradient(135deg, var(--purple), var(--pink)) !important;
+      color: var(--white) !important;
+      padding: .45rem 1.15rem;
+      border-radius: 999px;
+      font-weight: 700 !important;
+      transition: opacity .2s, transform .15s;
+    }
+    .nav-book:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* ── PAGE ─────────────────────────────────────────── */
+    main {
+      min-height: 100vh;
+      padding-top: calc(var(--nav-h) + 4rem);
+      padding-bottom: 6rem;
+      padding-left:  clamp(1.25rem, 6vw, 4rem);
+      padding-right: clamp(1.25rem, 6vw, 4rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* background orbs */
+    main::before, main::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(100px);
+    }
+
+    main::before {
+      width: min(550px, 80vw);
+      height: min(550px, 80vw);
+      background: var(--purple);
+      opacity: .12;
+      top: 5%; right: -10%;
+      animation: orbDrift 12s ease-in-out infinite alternate;
+    }
+
+    main::after {
+      width: min(450px, 70vw);
+      height: min(450px, 70vw);
+      background: var(--pink);
+      opacity: .1;
+      bottom: 10%; left: -8%;
+      animation: orbDrift 15s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes orbDrift {
+      from { transform: translate(0, 0); }
+      to   { transform: translate(4%, 6%); }
+    }
+
+    /* ── HEADER ───────────────────────────────────────── */
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: .55rem;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 7vw, 4rem);
+      font-weight: 900;
+      letter-spacing: .07em;
+      line-height: 1;
+      margin-bottom: .85rem;
+      color: var(--white);
+      text-shadow:
+        0 0  6px #fff,
+        0 0 14px rgba(139,92,246,.8),
+        0 0 36px rgba(139,92,246,.5),
+        0 0 65px rgba(236,72,153,.35);
+    }
+
+    .subtitle {
+      font-size: clamp(.9rem, 2vw, 1.05rem);
+      color: rgba(248,248,248,.45);
+      line-height: 1.65;
+      margin-bottom: 2.75rem;
+      max-width: 500px;
+    }
+
+    /* ── FORM CARD ────────────────────────────────────── */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: clamp(1.75rem, 5vw, 2.75rem);
+      box-shadow:
+        0 0 0 1px rgba(139,92,246,.06),
+        0 24px 80px rgba(0,0,0,.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle inner gradient shimmer */
+    .form-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(139,92,246,.05) 0%, transparent 50%, rgba(236,72,153,.04) 100%);
+      pointer-events: none;
+    }
+
+    /* ── GRID ─────────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .col-span-2 { grid-column: span 2; }
+
+    @media (max-width: 580px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .col-span-2 { grid-column: span 1; }
+    }
+
+    /* ── FIELD ────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: .45rem; }
+
+    label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(248,248,248,.45);
+      transition: color .2s;
+    }
+
+    .field:focus-within label { color: var(--purple); }
+
+    /* shared input / select / textarea styles */
+    input[type=text],
+    input[type=email],
+    input[type=date],
+    input[type=tel],
+    input[type=number],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid rgba(139,92,246,.2);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: inherit;
+      /* 1rem = 16px — iOS Safari auto-zooms any input with font-size < 16px on focus */
+      font-size: 1rem;
+      /* guarantees the 48px minimum touch-target size (WCAG 2.5.5) */
+      min-height: 3rem;
+      padding: .75rem 1rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type=text]:focus,
+    input[type=email]:focus,
+    input[type=date]:focus,
+    input[type=tel]:focus,
+    input[type=number]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--purple);
+      box-shadow:
+        0 0 0 3px rgba(139,92,246,.18),
+        0 0 20px rgba(139,92,246,.12);
+    }
+
+    input[type=text]:hover:not(:focus),
+    input[type=email]:hover:not(:focus),
+    input[type=date]:hover:not(:focus),
+    input[type=tel]:hover:not(:focus),
+    input[type=number]:hover:not(:focus),
+    select:hover:not(:focus),
+    textarea:hover:not(:focus) {
+      border-color: rgba(139,92,246,.4);
+    }
+
+    /* placeholder */
+    input::placeholder, textarea::placeholder {
+      color: rgba(248,248,248,.2);
+    }
+
+    /* date input — force dark calendar icon on webkit */
+    input[type=date]::-webkit-calendar-picker-indicator {
+      filter: invert(.5) sepia(1) saturate(3) hue-rotate(230deg);
+      cursor: pointer;
+      opacity: .65;
+      transition: opacity .2s;
+    }
+
+    input[type=date]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+    /* select — custom arrow */
+    .select-wrap { position: relative; }
+
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid rgba(139,92,246,.65);
+      pointer-events: none;
+      transition: border-top-color .2s;
+    }
+
+    .select-wrap:focus-within::after { border-top-color: var(--purple); }
+
+    select { padding-right: 2.5rem; cursor: pointer; }
+
+    select option {
+      background: #1a1a1a;
+      color: var(--white);
+    }
+
+    /* textarea */
+    textarea {
+      resize: vertical;
+      min-height: 130px;
+      line-height: 1.6;
+    }
+
+    /* ── SUBMIT ───────────────────────────────────────── */
+    .submit-row {
+      margin-top: .5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      min-height: 3.25rem; /* keeps height stable when spinner replaces text */
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+      box-shadow: 0 0 24px rgba(139,92,246,.5), 0 0 55px rgba(236,72,153,.25);
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 36px rgba(139,92,246,.75), 0 0 80px rgba(236,72,153,.45);
+    }
+
+    .btn-submit:active:not(:disabled) { transform: translateY(0); }
+
+    .btn-submit:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .form-note {
+      text-align: center;
+      font-size: .72rem;
+      color: rgba(248,248,248,.25);
+      letter-spacing: .04em;
+    }
+
+    /* error message under field */
+    .field-error {
+      font-size: .7rem;
+      color: var(--pink);
+      letter-spacing: .04em;
+      min-height: .9rem;
+    }
+
+    /* ── SPINNER ──────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: .5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SUCCESS MODAL ───────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: rgba(0,0,0,.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-card {
+      background: var(--card);
+      border: 1px solid rgba(139,92,246,.28);
+      border-radius: 24px;
+      padding: clamp(2rem, 6vw, 2.75rem) clamp(1.5rem, 5vw, 2.25rem);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow:
+        0 0 0 1px rgba(139,92,246,.08),
+        0 32px 80px rgba(0,0,0,.7);
+      transform: scale(.92) translateY(20px);
+      opacity: 0;
+      transition:
+        transform .38s cubic-bezier(.34, 1.56, .64, 1),
+        opacity .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(139,92,246,.06) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .modal-backdrop.open .modal-card {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    .modal-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.75rem;
+      box-shadow:
+        0 0 0 14px rgba(139,92,246,.12),
+        0 0 40px rgba(139,92,246,.75),
+        0 0 90px rgba(139,92,246,.35);
+    }
+
+    .modal-icon svg { display: block; }
+
+    .modal-headline {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: .03em;
+      margin-bottom: .7rem;
+      color: var(--white);
+    }
+
+    .modal-body {
+      font-size: .93rem;
+      color: rgba(248,248,248,.48);
+      line-height: 1.72;
+      margin-bottom: 2rem;
+    }
+
+    .modal-close {
+      width: 100%;
+      padding: .9rem 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+      box-shadow: 0 0 22px rgba(139,92,246,.5), 0 0 50px rgba(236,72,153,.22);
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+    }
+
+    .modal-close:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 36px rgba(139,92,246,.8), 0 0 75px rgba(236,72,153,.45);
+    }
+
+    .modal-close:active { transform: translateY(0); }
+
+    /* ── FOOTER ───────────────────────────────────────── */
+    .site-footer {
+      position: relative;
+      margin-top: 5rem;
+      padding: 3rem clamp(1.25rem, 5vw, 3rem) 2.5rem;
+    }
+
+    .site-footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: clamp(1.25rem, 8%, 5rem);
+      right: clamp(1.25rem, 8%, 5rem);
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent,
+        var(--purple) 30%,
+        var(--pink)   70%,
+        transparent
+      );
+    }
+
+    .footer-inner {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 1.15rem;
+      font-weight: 900;
+      letter-spacing: .14em;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: .85rem;
+      align-items: center;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(139,92,246,.25);
+      color: rgba(248,248,248,.45);
+      text-decoration: none;
+      transition: color .22s, border-color .22s, background .22s, transform .22s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .social-link:hover {
+      color: var(--white);
+      border-color: rgba(236,72,153,.6);
+      background: rgba(236,72,153,.1);
+      transform: translateY(-3px);
+    }
+
+    .social-link svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .footer-email {
+      font-size: .87rem;
+      color: rgba(248,248,248,.4);
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+
+    .footer-email:hover { color: var(--pink); }
+
+    .footer-copy {
+      font-size: .73rem;
+      color: rgba(248,248,248,.22);
+      letter-spacing: .05em;
+    }
+
+    /* ── PAGE LOADER ─────────────────────────────────── */
+    #pageLoader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.25rem;
+      user-select: none;
+    }
+
+    .loader-logo {
+      font-size: clamp(2.2rem, 8vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: .12em;
+      color: #fff;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      text-shadow:
+        0 0  4px #fff,
+        0 0 12px #fff,
+        0 0 22px rgba(139,92,246,1),
+        0 0 42px rgba(139,92,246,.9),
+        0 0 65px rgba(139,92,246,.7),
+        0 0 52px rgba(236,72,153,.75),
+        0 0 85px rgba(236,72,153,.5);
+      animation: loaderFlicker 2.5s ease-in-out infinite;
+    }
+
+    @keyframes loaderFlicker {
+      0%, 88%, 100% { opacity: 1; }
+      91%           { opacity: .82; }
+      93%           { opacity: 1; }
+      95%           { opacity: .7; }
+      97%           { opacity: 1; }
+    }
+
+    .loader-track {
+      width: clamp(180px, 45vw, 300px);
+      height: 3px;
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .loader-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #8B5CF6, #EC4899);
+      border-radius: 999px;
+    }
+
+    /* ── Scroll-triggered fade-in ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div id="pageLoader" aria-hidden="true">
+  <div class="loader-inner">
+    <p class="loader-logo">DJ CARLOS</p>
+    <div class="loader-track">
+      <div class="loader-fill" id="loaderFill"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var loader = document.getElementById('pageLoader');
+  var fill   = document.getElementById('loaderFill');
+  var start  = Date.now(), raf;
+
+  function tick() {
+    var t = Math.min(1, (Date.now() - start) / 1100);
+    fill.style.width = ((1 - Math.pow(1 - t, 3)) * 75) + '%';
+    if (t < 1) raf = requestAnimationFrame(tick);
+  }
+  raf = requestAnimationFrame(tick);
+
+  function finish() {
+    cancelAnimationFrame(raf);
+    var wait = Math.max(0, 850 - (Date.now() - start));
+    setTimeout(function () {
+      fill.style.transition = 'width .3s ease-out';
+      fill.style.width = '100%';
+      setTimeout(function () {
+        loader.style.transition = 'opacity .5s ease';
+        loader.style.opacity = '0';
+        setTimeout(function () { loader.remove(); }, 520);
+      }, 320);
+    }, wait);
+  }
+
+  if (document.readyState === 'complete') finish();
+  else window.addEventListener('load', finish, { once: true });
+}());
+</script>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">DJ CARLOS</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="mixes.html">Mixes</a></li>
+    <li><a href="booking.html" class="nav-book">Book</a></li>
+  </ul>
+</nav>
+
+<main>
+  <div class="page-wrap">
+
+    <p class="eyebrow fade-up">Get in Touch</p>
+    <h1 class="fade-up" data-delay="80">BOOK DJ CARLOS</h1>
+    <p class="subtitle fade-up" data-delay="140">
+      Fill out the form and I'll get back to you within 24 hours to discuss
+      availability, set lists, and everything else to make your event unforgettable.
+    </p>
+
+    <div class="form-card fade-up" data-delay="200">
+
+      <!-- FORM -->
+      <form id="bookingForm" novalidate>
+        <div class="form-grid">
+
+          <!-- Name -->
+          <div class="field">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name"
+                   placeholder="Maria González" autocomplete="name" />
+            <span class="field-error" id="nameErr"></span>
+          </div>
+
+          <!-- Email -->
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email"
+                   placeholder="maria@example.com" autocomplete="email" />
+            <span class="field-error" id="emailErr"></span>
+          </div>
+
+          <!-- Event Date -->
+          <div class="field">
+            <label for="eventDate">Event Date</label>
+            <input type="date" id="eventDate" name="eventDate" />
+            <span class="field-error" id="dateErr"></span>
+          </div>
+
+          <!-- Event Type -->
+          <div class="field">
+            <label for="eventType">Event Type</label>
+            <div class="select-wrap">
+              <select id="eventType" name="eventType">
+                <option value="" disabled selected>Select type…</option>
+                <option value="Wedding">Wedding</option>
+                <option value="Corporate">Corporate</option>
+                <option value="Club Night">Club Night</option>
+                <option value="Private Party">Private Party</option>
+              </select>
+            </div>
+            <span class="field-error" id="typeErr"></span>
+          </div>
+
+          <!-- Venue Name -->
+          <div class="field">
+            <label for="venue">Venue Name</label>
+            <input type="text" id="venue" name="venue"
+                   placeholder="Club Éxtasis, Mexico City" />
+            <span class="field-error" id="venueErr"></span>
+          </div>
+
+          <!-- Budget -->
+          <div class="field">
+            <label for="budget">Budget Range</label>
+            <div class="select-wrap">
+              <select id="budget" name="budget">
+                <option value="" disabled selected>Select budget…</option>
+                <option value="Under $500">Under $500</option>
+                <option value="$500–$1,000">$500–$1,000</option>
+                <option value="$1,000–$2,500">$1,000–$2,500</option>
+                <option value="$2,500+">$2,500+</option>
+              </select>
+            </div>
+            <span class="field-error" id="budgetErr"></span>
+          </div>
+
+          <!-- Details -->
+          <div class="field col-span-2">
+            <label for="details">Additional Details</label>
+            <textarea id="details" name="details"
+                      placeholder="Tell me about the vibe, guest count, preferred genres, special requests…"></textarea>
+          </div>
+
+          <!-- Submit -->
+          <div class="col-span-2 submit-row">
+            <button type="submit" class="btn-submit" id="submitBtn">
+              Send Booking Request
+            </button>
+            <p class="form-note">
+              Your info is sent securely and never shared with third parties.
+            </p>
+          </div>
+
+        </div>
+      </form>
+
+    </div><!-- /form-card -->
+  </div><!-- /page-wrap -->
+</main>
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modalHeadline" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-icon" aria-hidden="true">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+           stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <h2 class="modal-headline" id="modalHeadline">Booking Request Sent!</h2>
+    <p class="modal-body">
+      Carlos will review your request and get back to you within 24 hours.
+    </p>
+    <button class="modal-close" id="modalClose">Close</button>
+  </div>
+</div>
+
+<footer class="site-footer fade-up" role="contentinfo">
+  <div class="footer-inner">
+    <a class="footer-logo" href="index.html">DJ CARLOS</a>
+
+    <div class="footer-social" role="list" aria-label="Social media">
+      <a class="social-link" href="#" aria-label="SoundCloud" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M11.56 8.87V17h8.76c1.01 0 1.68-.67 1.68-1.68v-3.36c0-.89-.55-1.68-1.34-1.79.22-.67.11-1.56-.33-2.12-.45-.56-1.12-.89-1.79-.78C17.87 6.2 16.75 5.44 15.52 5.44c-.89 0-1.68.34-2.24.89-.56-.22-1.12-.22-1.68 0V8.87zM3.36 14.05c-.67 0-1.12-.45-1.12-1.12V9.34c0-.67.45-1.12 1.12-1.12.67 0 1.12.45 1.12 1.12v3.59c0 .67-.45 1.12-1.12 1.12zM5.6 14.5c-.67 0-1.12-.45-1.12-1.12V8.87c0-.67.45-1.12 1.12-1.12.67 0 1.12.45 1.12 1.12v4.51c0 .67-.45 1.12-1.12 1.12zM7.84 14.28c-.67 0-1.12-.45-1.12-1.12V9.34c0-.67.45-1.12 1.12-1.12.67 0 1.12.45 1.12 1.12v3.82c0 .67-.45 1.12-1.12 1.12z"/>
+        </svg>
+      </a>
+      <a class="social-link" href="#" aria-label="Spotify" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.36-.66.48-1.021.24-2.82-1.74-6.36-2.1-10.561-1.14-.418.12-.779-.18-.899-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.479.66.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.02.6-1.14 4.32-1.32 9.66-.66 13.44 1.56.36.18.54.78.241 1.22zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.2-.18-1.38-.72-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.721 1.62.539.3.719 1.02.419 1.56-.299.42-1.02.6-1.559.3z"/>
+        </svg>
+      </a>
+      <a class="social-link" href="#" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+      <a class="social-link" href="#" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 8.98L15.5 12l-5.75 3.04V8.98z"/>
+        </svg>
+      </a>
+    </div>
+
+    <a class="footer-email" href="mailto:booking@djcarlos.mx">booking@djcarlos.mx</a>
+    <p class="footer-copy">&copy; 2026 DJ Carlos. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const ENDPOINT = 'https://formspree.io/f/mojrkvkp';
+
+  const form         = document.getElementById('bookingForm');
+  const submitBtn    = document.getElementById('submitBtn');
+  const successModal = document.getElementById('successModal');
+  const modalClose   = document.getElementById('modalClose');
+
+  function openModal() {
+    successModal.removeAttribute('aria-hidden');
+    successModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    modalClose.focus();
+  }
+
+  modalClose.addEventListener('click', () => location.reload());
+  successModal.addEventListener('click', e => {
+    if (e.target === successModal) location.reload();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && successModal.classList.contains('open')) location.reload();
+  });
+
+  /* ── VALIDATION ─────────────────────────────────────── */
+  const rules = [
+    { id: 'name',      errId: 'nameErr',   test: v => v.trim().length >= 2,
+      msg: 'Please enter your full name.' },
+    { id: 'email',     errId: 'emailErr',  test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+      msg: 'Please enter a valid email address.' },
+    { id: 'eventDate', errId: 'dateErr',   test: v => { if (!v) return false; return new Date(v) > new Date(); },
+      msg: 'Please pick a future date for your event.' },
+    { id: 'eventType', errId: 'typeErr',   test: v => v !== '',
+      msg: 'Please select an event type.' },
+    { id: 'venue',     errId: 'venueErr',  test: v => v.trim().length >= 2,
+      msg: 'Please enter the venue name.' },
+    { id: 'budget',    errId: 'budgetErr', test: v => v !== '',
+      msg: 'Please select a budget range.' },
+  ];
+
+  function clearErrors() {
+    rules.forEach(r => {
+      document.getElementById(r.errId).textContent = '';
+      document.getElementById(r.id).style.borderColor = '';
+    });
+  }
+
+  function validate() {
+    let ok = true;
+    rules.forEach(r => {
+      const el  = document.getElementById(r.id);
+      const err = document.getElementById(r.errId);
+      if (!r.test(el.value)) {
+        err.textContent = r.msg;
+        el.style.borderColor = 'var(--pink)';
+        el.style.boxShadow   = '0 0 0 3px rgba(236,72,153,.18)';
+        ok = false;
+      }
+    });
+    return ok;
+  }
+
+  /* clear per-field error as user corrects it */
+  rules.forEach(r => {
+    document.getElementById(r.id).addEventListener('input', () => {
+      if (r.test(document.getElementById(r.id).value)) {
+        document.getElementById(r.errId).textContent = '';
+        document.getElementById(r.id).style.borderColor = '';
+        document.getElementById(r.id).style.boxShadow   = '';
+      }
+    });
+  });
+
+  /* ── SUBMIT ─────────────────────────────────────────── */
+  const ORIGINAL_LABEL = submitBtn.textContent.trim();
+
+  function setSubmitting(on) {
+    submitBtn.disabled = on;
+    submitBtn.setAttribute('aria-busy', String(on));
+    submitBtn.innerHTML = on
+      ? '<span class="spinner" aria-hidden="true"></span>Sending…'
+      : ORIGINAL_LABEL;
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    clearErrors();
+    if (!validate()) return;
+
+    setSubmitting(true);
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method:  'POST',
+        body:    new FormData(form),
+        headers: { 'Accept': 'application/json' },
+      });
+
+      if (res.ok) {
+        setSubmitting(false);
+        openModal();
+      } else {
+        const json = await res.json().catch(() => ({}));
+        throw new Error(json.error || 'Submission failed.');
+      }
+    } catch (err) {
+      setSubmitting(false);
+      const existing = form.querySelector('.submit-error');
+      if (existing) existing.remove();
+      const msg = document.createElement('p');
+      msg.className = 'field-error submit-error';
+      msg.style.cssText = 'text-align:center;margin-top:.25rem';
+      msg.textContent = 'Something went wrong — please try again or email us directly.';
+      submitBtn.insertAdjacentElement('afterend', msg);
+    }
+  });
+</script>
+  <script>
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.fade-up').forEach(function(el) { el.classList.add('visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var delay = parseInt(el.dataset.delay || '0', 10);
+        setTimeout(function() { el.classList.add('visible'); }, delay);
+        io.unobserve(el);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-up').forEach(function(el) { io.observe(el); });
+  }());
+  </script>
+</body>
+</html>
