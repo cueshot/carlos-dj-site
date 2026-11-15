@@ -568,6 +568,21 @@
       .btn-secondary { display: none; }
     }
 
+    /* ── WATERMARK ────────────────────────────────────── */
+    .watermark {
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      z-index: 90;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      font-size: 18pt;
+      color: #fff;
+      opacity: .25;
+      pointer-events: none;
+    }
+
     /* ── PAGE LOADER ─────────────────────────────────── */
     #pageLoader {
       position: fixed;
@@ -687,13 +702,15 @@
 
   <!-- NAV -->
   <nav aria-label="Main navigation">
-    <a class="nav-logo" href="#home">DJ CARLOS</a>
+    <a class="nav-logo" href="index.html">DJ CARLOS</a>
     <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#mixes">Mixes</a></li>
-      <li><a href="#book" class="nav-book">Book</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mixes.html">Mixes</a></li>
+      <li><a href="booking.html" class="nav-book">Book</a></li>
     </ul>
   </nav>
+
+  <p class="watermark">THIS IS A DEMO</p>
 
   <!-- HERO -->
   <section id="home">
@@ -702,8 +719,8 @@
     <p class="tagline">Bringing the Beat to Mexico City &amp; Beyond.</p>
 
     <div class="cta-wrap">
-      <a href="#book" class="btn-primary">Book Now</a>
-      <a href="#mixes" class="btn-secondary">Hear the Mixes</a>
+      <a href="booking.html" class="btn-primary">Book Now</a>
+      <a href="mixes.html" class="btn-secondary">Hear the Mixes</a>
     </div>
 
     <!-- animated waveform decoration -->

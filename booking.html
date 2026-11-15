@@ -660,6 +660,21 @@
     @media (prefers-reduced-motion: reduce) {
       .fade-up { opacity: 1; transform: none; transition: none; }
     }
+
+    /* ── WATERMARK ────────────────────────────────────── */
+    .watermark {
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      z-index: 90;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      font-size: 18pt;
+      color: #fff;
+      opacity: .25;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -714,6 +729,8 @@
     <li><a href="booking.html" class="nav-book">Book</a></li>
   </ul>
 </nav>
+
+<p class="watermark">THIS IS A DEMO</p>
 
 <main>
   <div class="page-wrap">
